@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 
 const Footer = () => {
   return (
-    <div className="mt-10 bg-gradient-to-r from-indigo-700 via-blue-700 to-purple-800 text-white px-4 py-10">
+    <div className="bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 text-white px-4 py-8 mt-5">
 
-      <div className="flex flex-wrap justify-between gap-8">
+      <div className="flex flex-wrap justify-between gap-6">
 
         {/* ABOUT */}
         <div className="min-w-[140px] flex-1">
@@ -18,18 +18,18 @@ const Footer = () => {
             />
           </div>
 
-          <p className="text-xs md:text-sm mt-3 text-white/90 leading-relaxed">
+          <p className="text-xs md:text-sm mt-2 text-white/90">
             IITian Bros provides well-structured and easy-to-understand learning resources for competitive exams.
           </p>
 
-          <p className="mt-3 text-sm font-medium">Made with ❤️</p>
+          <p className="mt-2 text-sm">Made with ❤️</p>
         </div>
 
         {/* LINKS */}
         <div className="min-w-[120px] flex-1 text-sm md:text-base">
-          <div className="font-bold mb-3">Links</div>
+          <div className="font-bold mb-2">Links</div>
 
-          <div className="space-y-2 text-white/90">
+          <div className="space-y-1">
             <div><Link to="/About">About Us</Link></div>
             <div><Link to="/Contact">Contact Us</Link></div>
             <div><Link to="/Feedback">Feedback</Link></div>
@@ -38,9 +38,9 @@ const Footer = () => {
 
         {/* COURSES */}
         <div className="min-w-[120px] flex-1 text-sm md:text-base">
-          <div className="font-bold mb-3">Courses</div>
+          <div className="font-bold mb-2">Courses</div>
 
-          <div className="space-y-2 text-white/90">
+          <div className="space-y-1">
             <div>Physics</div>
             <div>Chemistry</div>
             <div>Maths</div>
@@ -50,7 +50,7 @@ const Footer = () => {
 
         {/* SOCIAL */}
         <div className="min-w-[140px] flex-1">
-          <div className="font-bold mb-3 text-sm md:text-base">Social</div>
+          <div className="font-bold mb-2 text-sm md:text-base">Social</div>
 
           <div className="flex flex-wrap gap-3">
 
@@ -88,14 +88,8 @@ const Footer = () => {
         </div>
 
       </div>
-
-      {/* bottom line */}
-      <div className="text-center text-white/80 text-sm mt-8">
-        © IITian Bros
-      </div>
-
     </div>
   )
 }
 
-export default Footer
+export default Footer 
