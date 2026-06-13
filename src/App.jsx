@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import Lenis from "lenis";
+// import Lenis from "lenis";
 import Navbar from './Components/Navbar'
 import Searchbar from './Components/Searchbar';
 import Cards from './Components/Cards';
@@ -36,26 +36,26 @@ const App = () => {
   // =========================
   // CHANGED: STABLE LENIS
   // =========================
-  useEffect(() => {
-    const lenis = new Lenis({
-      smoothWheel: true,
-      lerp: 0.08,
-    });
+  // useEffect(() => {
+  //   const lenis = new Lenis({
+  //     smoothWheel: true,
+  //     lerp: 0.08,
+  //   });
 
-    let rafId;
+  //   let rafId;
 
-    const raf = (time) => {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    };
+  //   const raf = (time) => {
+  //     lenis.raf(time);
+  //     rafId = requestAnimationFrame(raf);
+  //   };
 
-    rafId = requestAnimationFrame(raf);
+  //   rafId = requestAnimationFrame(raf);
 
-    return () => {
-      cancelAnimationFrame(rafId);
-      lenis.destroy();
-    };
-  }, []);
+  //   return () => {
+  //     cancelAnimationFrame(rafId);
+  //     lenis.destroy();
+  //   };
+  // }, []);
 
   async function getMathsdataandNotes(str) {
     let getIt = await axios(str);
