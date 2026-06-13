@@ -48,7 +48,7 @@ const ContactUs = () => {
         />
         <div className="div w-full flex justify-center items-center min-h-screen">
           <div className="div w-[60%] md:w-[35%] py-2 bg-black opacity-75 rounded-2xl">
-            <form className='flex flex-col justify-center items-center space-y-1.5 py-3.5' method='post' action="https://backend-api.onrender.com/create/Contact">
+            <form className='flex flex-col justify-center items-center space-y-1.5 py-3.5' method='post' action="https://backend-api-p3b2.onrender.com/Contact">
               <div className='font-semibold text-xl'>Get in Touch</div>
               <input type="text" placeholder='Enter name ' className='hover:outline-0 outline-0 bg-zinc-600 py-2 rounded-md px-2 w-[70%]' name="Name"></input>
               <input type="text" placeholder='Email ' className='hover:outline-0 outline-0 bg-zinc-600 py-2 rounded-md px-2 w-[70%]' name="Email"></input>
