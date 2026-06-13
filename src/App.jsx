@@ -27,16 +27,52 @@ const App = () => {
   const [password, setPassword] = useState("");
 
   const [loading, setLoading] = useState(true);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
 
   const wholeRef = useRef(null);
 
   async function getMathsdataandNotes(str) {
     let getIt = await axios(str);
     setgetdata(getIt.data);
+    return getIt.data;
   }
 
+  // Preload images function
+  const preloadImages = (data) => {
+    const imagePromises = data.map((item) => {
+      return new Promise((resolve) => {
+        if (!item.image) {
+          resolve();
+          return;
+        }
+        
+        const img = new Image();
+        img.src = item.image;
+        img.onload = () => resolve();
+        img.onerror = () => resolve();
+      });
+    });
+
+    return Promise.all(imagePromises);
+  };
+
+  // Load all data and images
   useEffect(() => {
-    getMathsdataandNotes("maths.json");
+    const loadAllContent = async () => {
+      try {
+        const data = await getMathsdataandNotes("maths.json");
+        await preloadImages(data);
+        setImagesLoaded(true);
+        setTimeout(() => {
+          setLoading(false);
+        }, 500);
+      } catch (error) {
+        console.error("Error loading content:", error);
+        setLoading(false);
+      }
+    };
+
+    loadAllContent();
   }, []);
 
   const syncAuth = async () => {
@@ -69,11 +105,13 @@ const App = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setLoading(false);
-    }, 800);
+      if (!imagesLoaded) {
+        setLoading(false);
+      }
+    }, 3000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [imagesLoaded]);
 
   useEffect(() => {
     document.body.style.overflow = loading ? "hidden" : "auto";
