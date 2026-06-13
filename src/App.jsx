@@ -27,16 +27,60 @@ const App = () => {
   const [password, setPassword] = useState("");
 
   const [loading, setLoading] = useState(true);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [preloadedImages, setPreloadedImages] = useState([]);
 
   const wholeRef = useRef(null);
 
   async function getMathsdataandNotes(str) {
     let getIt = await axios(str);
     setgetdata(getIt.data);
+    return getIt.data;
   }
 
+  // Preload images function
+  const preloadImages = (data) => {
+    const imagePromises = data.map((item) => {
+      return new Promise((resolve, reject) => {
+        if (!item.image) {
+          resolve();
+          return;
+        }
+        
+        const img = new Image();
+        img.src = item.image;
+        img.onload = () => {
+          setPreloadedImages(prev => [...prev, item.image]);
+          resolve();
+        };
+        img.onerror = () => {
+          console.warn(`Failed to load image: ${item.image}`);
+          resolve(); 
+        };
+      });
+    });
+
+    return Promise.all(imagePromises);
+  };
+
   useEffect(() => {
-    getMathsdataandNotes("maths.json");
+    const loadAllContent = async () => {
+      try {
+        const data = await getMathsdataandNotes("maths.json");
+        
+        await preloadImages(data);
+        setImagesLoaded(true);
+        
+        setTimeout(() => {
+          setLoading(false);
+        }, 500);
+      } catch (error) {
+        console.error("Error loading content:", error);
+        setLoading(false);
+      }
+    };
+
+    loadAllContent();
   }, []);
 
   const syncAuth = async () => {
@@ -68,14 +112,6 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 800);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
     document.body.style.overflow = loading ? "hidden" : "auto";
   }, [loading]);
 
@@ -104,9 +140,21 @@ const App = () => {
 
   if (loading) {
     return (
-      <div className="w-full h-screen flex justify-center items-center bg-black text-white">
-        <div className="animate-pulse text-xl">
+      <div className="w-full h-screen flex flex-col justify-center items-center bg-black text-white">
+        <div className="animate-pulse text-xl mb-4">
           Loading IITians Point...
+        </div>
+        <div className="text-sm text-gray-400">
+          {imagesLoaded ? "Almost there..." : "Loading resources..."}
+        </div>
+        <div className="mt-4 w-48 h-1 bg-gray-800 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-red-600 transition-all duration-300"
+            style={{ 
+              width: imagesLoaded ? "100%" : 
+                preloadedImages.length > 0 ? `${(preloadedImages.length / (getdata.length || 1)) * 100}%` : "0%" 
+            }}
+          />
         </div>
       </div>
     );
@@ -167,15 +215,20 @@ const App = () => {
         Today’s struggle is tomorrow’s strength.
       </div>
 
-      {/* CARDS */}
-      <div className="flex flex-wrap justify-center gap-4 mt-4">
-        {getdata.map((value) => (
-          <Cards
+      {/* CARDS with fade-in animation */}
+      <div className="flex flex-wrap justify-center gap-4 mt-4 animate-fadeIn">
+        {getdata.map((value, index) => (
+          <div
             key={value.title}
-            title={value.title}
-            image={value.image}
-            subtitle={value.subtitle}
-          />
+            className="animate-slideUp"
+            style={{ animationDelay: `${index * 0.1}s` }}
+          >
+            <Cards
+              title={value.title}
+              image={value.image}
+              subtitle={value.subtitle}
+            />
+          </div>
         ))}
       </div>
 
@@ -184,6 +237,37 @@ const App = () => {
       <div className="text-center text-white bg-zinc-950 py-3">
         © IITian Bros
       </div>
+
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+        
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        .animate-fadeIn {
+          animation: fadeIn 0.5s ease-out;
+        }
+        
+        .animate-slideUp {
+          animation: slideUp 0.5s ease-out forwards;
+          opacity: 0;
+        }
+      `}</style>
     </div>
   );
 };
