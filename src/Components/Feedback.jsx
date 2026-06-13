@@ -61,7 +61,7 @@ const Feedback = () => {
                 </div>
 
             <div className='text-2xl md:text-4xl font-semibold md:font-bold w-full flex justify-center items-center'>We value your opinion</div>
-            <form className='flex flex-col justify-center items-center w-[100%] py-3' method="post" action="http://localhost:3000/feedback">
+            <form className='flex flex-col justify-center items-center w-[100%] py-3' method="post" action="https://backend-api.onrender.com/create/feedback">
                 <textarea placeholder='Feedback' className='hover:outline-0 outline-0 bg-zinc-600 px-1 rounded-md py-1 md:w-3/4 h-28 md:h-36' name="Feedback"></textarea>
                 <button type="submit" className='bg-green-500 hover:bg-green-600 px-2 py-2 rounded-md mt-1.5'>Send</button>
             </form>
