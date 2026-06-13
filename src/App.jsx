@@ -27,69 +27,16 @@ const App = () => {
   const [password, setPassword] = useState("");
 
   const [loading, setLoading] = useState(true);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
-  const [loadedCount, setLoadedCount] = useState(0);
 
   const wholeRef = useRef(null);
 
   async function getMathsdataandNotes(str) {
     let getIt = await axios(str);
     setgetdata(getIt.data);
-    return getIt.data;
   }
 
-  // Preload images function
-  const preloadImages = (data) => {
-    const totalImages = data.filter(item => item.image).length;
-    let loadedImages = 0;
-
-    const imagePromises = data.map((item) => {
-      return new Promise((resolve) => {
-        if (!item.image) {
-          resolve();
-          return;
-        }
-        
-        const img = new Image();
-        img.src = item.image;
-        img.onload = () => {
-          loadedImages++;
-          setLoadedCount(loadedImages);
-          resolve();
-        };
-        img.onerror = () => {
-          loadedImages++;
-          setLoadedCount(loadedImages);
-          resolve();
-        };
-      });
-    });
-
-    return Promise.all(imagePromises);
-  };
-
-  // Load all data and images
   useEffect(() => {
-    const loadAllContent = async () => {
-      try {
-        // Fetch data
-        const data = await getMathsdataandNotes("maths.json");
-        
-        // Preload all images
-        await preloadImages(data);
-        setImagesLoaded(true);
-        
-        // Small delay for smooth transition
-        setTimeout(() => {
-          setLoading(false);
-        }, 300);
-      } catch (error) {
-        console.error("Error loading content:", error);
-        setLoading(false);
-      }
-    };
-
-    loadAllContent();
+    getMathsdataandNotes("maths.json");
   }, []);
 
   const syncAuth = async () => {
@@ -121,6 +68,14 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 800);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
     document.body.style.overflow = loading ? "hidden" : "auto";
   }, [loading]);
 
@@ -148,47 +103,35 @@ const App = () => {
   };
 
   if (loading) {
-    const totalImages = getdata.filter(item => item.image).length;
-    const progress = totalImages > 0 ? (loadedCount / totalImages) * 100 : 0;
-
     return (
-      <div className="w-full h-screen flex flex-col justify-center items-center bg-black text-white">
-        <div className="text-2xl font-bold mb-4 animate-pulse">
-          IITians Point
-        </div>
-        <div className="text-gray-400 mb-6">
-          {imagesLoaded ? "Starting..." : `Loading images ${loadedCount}/${totalImages}`}
-        </div>
-        <div className="w-64 h-2 bg-gray-800 rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-red-600 transition-all duration-300 rounded-full"
-            style={{ width: `${progress}%` }}
-          />
+      <div className="w-full h-screen flex justify-center items-center bg-black text-white">
+        <div className="animate-pulse text-xl">
+          Loading IITians Point...
         </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full min-h-screen bg-black" ref={wholeRef}>
+    <div className="w-full bg-black" ref={wholeRef}>
       <Navbar />
 
       {/* LOGIN MODAL */}
       {authChecked && showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 flex justify-center items-center z-50">
-          <div className="bg-zinc-900 p-8 rounded-xl w-[90%] md:w-[450px]">
-            <h1 className="text-3xl text-white text-center mb-6 font-bold">
+        <div className="fixed inset-0 bg-black flex justify-center items-center z-50">
+          <div className="bg-zinc-900 p-6 rounded-xl w-[90%] md:w-[400px]">
+            <h1 className="text-2xl text-white text-center mb-4">
               Login
             </h1>
 
             <input
-              className="w-full p-3 mb-4 bg-black text-white border border-gray-600 rounded-lg focus:outline-none focus:border-red-600"
+              className="w-full p-2 mb-3 bg-black text-white border border-gray-600"
               placeholder="Name"
               onChange={(e) => setName(e.target.value)}
             />
 
             <input
-              className="w-full p-3 mb-6 bg-black text-white border border-gray-600 rounded-lg focus:outline-none focus:border-red-600"
+              className="w-full p-2 mb-3 bg-black text-white border border-gray-600"
               type="password"
               placeholder="Password"
               onChange={(e) => setPassword(e.target.value)}
@@ -196,7 +139,7 @@ const App = () => {
 
             <button
               onClick={handleLogin}
-              className="w-full bg-red-600 py-3 text-white rounded-lg font-semibold hover:bg-red-700 transition"
+              className="w-full bg-red-600 py-2 text-white rounded"
             >
               Login
             </button>
@@ -212,55 +155,35 @@ const App = () => {
 
       {/* USER INFO BAR */}
       {authChecked && isLoggedIn && (
-        <div className="bg-emerald-800 text-white px-6 py-4 flex justify-between items-center">
-          <div className="text-lg">
+        <div className="bg-emerald-800 text-white px-4 py-3 flex justify-between">
+          <div>
             Welcome, {username} 👋 | 🔥 Streak: {streak}
           </div>
-          <div className="text-lg font-semibold">Days left: {days}</div>
+          <div>Days left: {days}</div>
         </div>
       )}
 
-      <div className="bg-zinc-900 text-white text-center py-3 text-lg italic">
-        "Today’s struggle is tomorrow’s strength."
+      <div className="bg-zinc-900 text-white text-center py-2">
+        Today’s struggle is tomorrow’s strength.
       </div>
 
-      {/* CARDS - Original size preserved */}
-      <div className="flex flex-wrap justify-center gap-6 mt-8">
-        {getdata.map((value, index) => (
-          <div
+      {/* CARDS */}
+      <div className="flex flex-wrap justify-center gap-4 mt-4">
+        {getdata.map((value) => (
+          <Cards
             key={value.title}
-            style={{ 
-              animation: `fadeInUp 0.5s ease-out ${index * 0.1}s forwards`,
-              opacity: 0
-            }}
-          >
-            <Cards
-              title={value.title}
-              image={value.image}
-              subtitle={value.subtitle}
-            />
-          </div>
+            title={value.title}
+            image={value.image}
+            subtitle={value.subtitle}
+          />
         ))}
       </div>
 
       <Footer />
 
-      <div className="text-center text-white bg-zinc-950 py-4">
+      <div className="text-center text-white bg-zinc-950 py-3">
         © IITian Bros
       </div>
-
-      <style>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
 };
