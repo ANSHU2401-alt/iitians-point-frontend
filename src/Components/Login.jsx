@@ -31,7 +31,7 @@ const Login = () => {
 
     try {
       const res = await axios.post(
-        "https://backend-api.onrender.com/create/login",
+        "https://backend-api-p3b2.onrender.com/login",
         {
           Name: name,
           Password: password
