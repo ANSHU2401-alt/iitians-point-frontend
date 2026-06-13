@@ -224,26 +224,23 @@ const App = () => {
         "Today’s struggle is tomorrow’s strength."
       </div>
 
-      {/* CARDS - Full size */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {getdata.map((value, index) => (
-            <div
-              key={value.title}
-              className="transform transition-all duration-500 hover:scale-105"
-              style={{ 
-                animation: `fadeInUp 0.5s ease-out ${index * 0.1}s forwards`,
-                opacity: 0
-              }}
-            >
-              <Cards
-                title={value.title}
-                image={value.image}
-                subtitle={value.subtitle}
-              />
-            </div>
-          ))}
-        </div>
+      {/* CARDS - Original size preserved */}
+      <div className="flex flex-wrap justify-center gap-6 mt-8">
+        {getdata.map((value, index) => (
+          <div
+            key={value.title}
+            style={{ 
+              animation: `fadeInUp 0.5s ease-out ${index * 0.1}s forwards`,
+              opacity: 0
+            }}
+          >
+            <Cards
+              title={value.title}
+              image={value.image}
+              subtitle={value.subtitle}
+            />
+          </div>
+        ))}
       </div>
 
       <Footer />
