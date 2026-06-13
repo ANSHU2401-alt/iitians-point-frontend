@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Lenis from "lenis";
 import Navbar from './Components/Navbar'
 import Searchbar from './Components/Searchbar';
@@ -27,21 +27,35 @@ const App = () => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [streak, setStreak] = useState(0);
+
+  // =========================
+  // CHANGED: LOADING STATE
+  // =========================
+  const [loading, setLoading] = useState(true);
+
+  // =========================
+  // CHANGED: STABLE LENIS
+  // =========================
   useEffect(() => {
     const lenis = new Lenis({
       smoothWheel: true,
-      lerp: 0.15,
-    })
+      lerp: 0.08,
+    });
+
+    let rafId;
 
     const raf = (time) => {
-      lenis.raf(time)
-      requestAnimationFrame(raf)
-    }
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    };
 
-    requestAnimationFrame(raf)
+    rafId = requestAnimationFrame(raf);
 
-    return () => lenis.destroy()
-  }, [])
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+    };
+  }, []);
 
   async function getMathsdataandNotes(str) {
     let getIt = await axios(str);
@@ -58,8 +72,6 @@ const App = () => {
         withCredentials: true
       });
 
-      console.log("CHECKLOGIN RESPONSE:", res.data);
-
       setAuthChecked(true);
 
       if (res.data.loggedIn === true) {
@@ -71,7 +83,6 @@ const App = () => {
         setUsername("");
       }
     } catch (error) {
-      console.error("syncAuth error:", error);
       setAuthChecked(true);
       setIsLoggedIn(false);
     }
@@ -80,6 +91,24 @@ const App = () => {
   useEffect(() => {
     syncAuth();
   }, []);
+
+  // =========================
+  // CHANGED: GLOBAL LOADING FIX
+  // =========================
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1200);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // =========================
+  // CHANGED: SCROLL LOCK DURING LOADING
+  // =========================
+  useEffect(() => {
+    document.body.style.overflow = loading ? "hidden" : "auto";
+  }, [loading]);
 
   const handleLogin = async () => {
     try {
@@ -90,60 +119,48 @@ const App = () => {
         withCredentials: true
       });
 
-      console.log("Login response:", res.data);
-
       if (res.data.success === true) {
         setUsername(res.data.username);
         setIsLoggedIn(true);
         setAuthChecked(true);
         setShowModal(false);
-
-        console.log("Login successful! Username:", res.data.username);
         await syncAuth();
       } else {
         alert("Invalid username or password");
       }
-    } catch (err) {
-      console.error("Login error:", err);
-      alert("Login failed");
-    }
-    if (res.data.success === true) {
-      setUsername(res.data.username);
-      setStreak(res.data.streak);
-      setIsLoggedIn(true);
-      setAuthChecked(true);
-      setShowModal(false);
 
-      await syncAuth();
+    } catch (err) {
+      alert("Login failed");
     }
   };
 
-  return (<>
+  // =========================
+  // CHANGED: LOADING SCREEN
+  // =========================
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex flex-col justify-center items-center bg-black text-white">
+        <div className="text-xl animate-pulse">
+          Loading IITians Point...
+        </div>
+      </div>
+    );
+  }
 
-    <div className="div w-full bg-black" ref={wholeRef}>
+  return (
+    <div className="w-full bg-black" ref={wholeRef}>
       <Navbar />
 
-      <div className="main text-white w-full bi relative bg-black">
+      <div className="text-white w-full relative bg-black">
 
-        {/* FIXED: This shows the username */}
-        {/* {authChecked && isLoggedIn && (
-          <div className="text-white font-semibold bg-emerald-800 px-4 py-3 text-sm z-100">
-            Welcome, {username} 👋
-          </div>
-        )} */}
-
-        {authChecked && showModal === true && (
-          <div className="fixed opacity-95 top-0 left-0 w-full h-full z-50 flex justify-center items-center bg-black">
+        {authChecked && showModal && (
+          <div className="fixed top-0 left-0 w-full h-full z-50 flex justify-center items-center bg-black">
 
             <div className="w-[90%] md:w-[450px] bg-zinc-900 rounded-xl p-6 text-white border border-zinc-700">
 
               <h1 className="text-3xl font-bold text-center">
                 Welcome to IITian Bros
               </h1>
-
-              <p className="text-center mt-3 text-zinc-400">
-                Login to track progress, bookmarks and streaks.
-              </p>
 
               <div className="mt-6 flex flex-col gap-3">
 
@@ -162,89 +179,56 @@ const App = () => {
 
                 <button
                   onClick={handleLogin}
-                  className="bg-red-600 text-center py-3 rounded-lg font-semibold"
+                  className="bg-red-600 py-3 rounded-lg font-semibold"
                 >
                   Login
                 </button>
 
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="border border-zinc-600 py-3 rounded-lg"
-                >
-                  Continue Without Login
-                </button>
-
               </div>
 
             </div>
-
           </div>
         )}
-        <Searchbar className="bl" toshow={getdata} search={searchref} setsearch={setsearchref} />
+
+        <Searchbar toshow={getdata} search={searchref} setsearch={setsearchref} />
+
         {authChecked && isLoggedIn && (
-          <div className="text-white font-semibold bg-emerald-800 px-4 py-3 text-sm z-100 flex justify-between">
-            <div className="div flex "><div className="div">Welcome, {username}👋&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
-              <div className="font-bold">
-                🔥 Streak: {streak}
-              </div>
+          <div className="text-white font-semibold bg-emerald-800 px-4 py-3 flex justify-between">
+            <div>
+              Welcome, {username} 👋 | 🔥 Streak: {streak}
             </div>
-            <div className="div font-bold">Days left for JEE MAIN JANUARY: {days}</div>
+            <div>
+              Days left: {days}
+            </div>
           </div>
         )}
-        <div className="mt-2 div text-xl pl-3 font-bold z-40 w-full flex justify-center items-center bg-zinc-900 py-3">
+
+        <div className="text-center bg-zinc-900 py-3">
           Today’s struggle is tomorrow’s strength.
         </div>
 
-        {/* <div className="div text-xl pl-3 font-semibold z-40 w-full flex justify-center items-center bg-zinc-900 py-1 pb-3.5">
-          Days left for JEE MAIN JANUARY: {days}
-        </div> */}
+        <div className="flex flex-wrap gap-3 justify-center mt-4 px-2">
 
-        <div className="mt-5 underline div text-2xl pl-3 font-semibold pb-1 z-40 ">
-          Tutorials
+          {getdata.map(value => (
+            <Cards
+              key={value.title}
+              title={value.title}
+              image={value.image}
+              subtitle={value.subtitle}
+            />
+          ))}
+
         </div>
 
-        <div className="div maths">
-          <div className="div flex flex-wrap gap-3.5 md:gap-4 w-full md:pt-4 justify-center opacity-90 md:pb-3 pt-4 px-2 mt-2 mb-2">
+        <Footer />
 
-            {getdata.map(value => {
-
-              if (searchref && value.title.toLowerCase().startsWith(searchref.toLowerCase())) {
-                return (<Cards
-                  key={value.title}
-                  title={value.title}
-                  image={value.image}
-                  subtitle={value.subtitle}
-                />)
-              }
-              else if (searchref) {
-                return null;
-              }
-              else {
-                return (<Cards
-                  key={value.title}
-                  title={value.title}
-                  image={value.image}
-                  subtitle={value.subtitle}
-                />)
-              }
-
-            })}
-
-          </div>
-        </div>
-
-        <div className="footer bg-gradient-to-r from-zinc-900 via-slate-950 to-violet-950 w-full grid grid-cols-[36%_20%_22%_20%]">
-          <Footer />
-        </div>
-
-        <div className=" div text-white px-2 py-3 bg-zinc-950">
+        <div className="text-white px-2 py-3 bg-zinc-950 text-center">
           &copy; IITian - Bros
         </div>
 
       </div>
     </div>
-
-  </>)
+  )
 }
 
 export default App
