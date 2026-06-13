@@ -104,7 +104,7 @@ const SignUp = () => {
             Create Account
           </h2>
 
-          <form className="space-y-4" method="post" action="http://localhost:3000/create">
+          <form className="space-y-4" method="post" action="https://backend-api.onrender.com/create/create">
             <div className="flex flex-col gap-2">
               <input
                 type="text" name="Name"
