@@ -28,7 +28,7 @@ const App = () => {
 
   const [loading, setLoading] = useState(true);
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  const [preloadedImages, setPreloadedImages] = useState([]);
+  const [loadedCount, setLoadedCount] = useState(0);
 
   const wholeRef = useRef(null);
 
@@ -40,8 +40,11 @@ const App = () => {
 
   // Preload images function
   const preloadImages = (data) => {
+    const totalImages = data.filter(item => item.image).length;
+    let loadedImages = 0;
+
     const imagePromises = data.map((item) => {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         if (!item.image) {
           resolve();
           return;
@@ -50,12 +53,14 @@ const App = () => {
         const img = new Image();
         img.src = item.image;
         img.onload = () => {
-          setPreloadedImages(prev => [...prev, item.image]);
+          loadedImages++;
+          setLoadedCount(loadedImages);
           resolve();
         };
         img.onerror = () => {
-          console.warn(`Failed to load image: ${item.image}`);
-          resolve(); 
+          loadedImages++;
+          setLoadedCount(loadedImages);
+          resolve();
         };
       });
     });
@@ -63,17 +68,21 @@ const App = () => {
     return Promise.all(imagePromises);
   };
 
+  // Load all data and images
   useEffect(() => {
     const loadAllContent = async () => {
       try {
+        // Fetch data
         const data = await getMathsdataandNotes("maths.json");
         
+        // Preload all images
         await preloadImages(data);
         setImagesLoaded(true);
         
+        // Small delay for smooth transition
         setTimeout(() => {
           setLoading(false);
-        }, 500);
+        }, 300);
       } catch (error) {
         console.error("Error loading content:", error);
         setLoading(false);
@@ -139,21 +148,21 @@ const App = () => {
   };
 
   if (loading) {
+    const totalImages = getdata.filter(item => item.image).length;
+    const progress = totalImages > 0 ? (loadedCount / totalImages) * 100 : 0;
+
     return (
       <div className="w-full h-screen flex flex-col justify-center items-center bg-black text-white">
-        <div className="animate-pulse text-xl mb-4">
-          Loading IITians Point...
+        <div className="text-2xl font-bold mb-4 animate-pulse">
+          IITians Point
         </div>
-        <div className="text-sm text-gray-400">
-          {imagesLoaded ? "Almost there..." : "Loading resources..."}
+        <div className="text-gray-400 mb-6">
+          {imagesLoaded ? "Starting..." : `Loading images ${loadedCount}/${totalImages}`}
         </div>
-        <div className="mt-4 w-48 h-1 bg-gray-800 rounded-full overflow-hidden">
+        <div className="w-64 h-2 bg-gray-800 rounded-full overflow-hidden">
           <div 
-            className="h-full bg-red-600 transition-all duration-300"
-            style={{ 
-              width: imagesLoaded ? "100%" : 
-                preloadedImages.length > 0 ? `${(preloadedImages.length / (getdata.length || 1)) * 100}%` : "0%" 
-            }}
+            className="h-full bg-red-600 transition-all duration-300 rounded-full"
+            style={{ width: `${progress}%` }}
           />
         </div>
       </div>
@@ -161,25 +170,25 @@ const App = () => {
   }
 
   return (
-    <div className="w-full bg-black" ref={wholeRef}>
+    <div className="w-full min-h-screen bg-black" ref={wholeRef}>
       <Navbar />
 
       {/* LOGIN MODAL */}
       {authChecked && showModal && (
-        <div className="fixed inset-0 bg-black flex justify-center items-center z-50">
-          <div className="bg-zinc-900 p-6 rounded-xl w-[90%] md:w-[400px]">
-            <h1 className="text-2xl text-white text-center mb-4">
+        <div className="fixed inset-0 bg-black bg-opacity-90 flex justify-center items-center z-50">
+          <div className="bg-zinc-900 p-8 rounded-xl w-[90%] md:w-[450px]">
+            <h1 className="text-3xl text-white text-center mb-6 font-bold">
               Login
             </h1>
 
             <input
-              className="w-full p-2 mb-3 bg-black text-white border border-gray-600"
+              className="w-full p-3 mb-4 bg-black text-white border border-gray-600 rounded-lg focus:outline-none focus:border-red-600"
               placeholder="Name"
               onChange={(e) => setName(e.target.value)}
             />
 
             <input
-              className="w-full p-2 mb-3 bg-black text-white border border-gray-600"
+              className="w-full p-3 mb-6 bg-black text-white border border-gray-600 rounded-lg focus:outline-none focus:border-red-600"
               type="password"
               placeholder="Password"
               onChange={(e) => setPassword(e.target.value)}
@@ -187,7 +196,7 @@ const App = () => {
 
             <button
               onClick={handleLogin}
-              className="w-full bg-red-600 py-2 text-white rounded"
+              className="w-full bg-red-600 py-3 text-white rounded-lg font-semibold hover:bg-red-700 transition"
             >
               Login
             </button>
@@ -203,69 +212,56 @@ const App = () => {
 
       {/* USER INFO BAR */}
       {authChecked && isLoggedIn && (
-        <div className="bg-emerald-800 text-white px-4 py-3 flex justify-between">
-          <div>
+        <div className="bg-emerald-800 text-white px-6 py-4 flex justify-between items-center">
+          <div className="text-lg">
             Welcome, {username} 👋 | 🔥 Streak: {streak}
           </div>
-          <div>Days left: {days}</div>
+          <div className="text-lg font-semibold">Days left: {days}</div>
         </div>
       )}
 
-      <div className="bg-zinc-900 text-white text-center py-2">
-        Today’s struggle is tomorrow’s strength.
+      <div className="bg-zinc-900 text-white text-center py-3 text-lg italic">
+        "Today’s struggle is tomorrow’s strength."
       </div>
 
-      {/* CARDS with fade-in animation */}
-      <div className="flex flex-wrap justify-center gap-4 mt-4 animate-fadeIn">
-        {getdata.map((value, index) => (
-          <div
-            key={value.title}
-            className="animate-slideUp"
-            style={{ animationDelay: `${index * 0.1}s` }}
-          >
-            <Cards
-              title={value.title}
-              image={value.image}
-              subtitle={value.subtitle}
-            />
-          </div>
-        ))}
+      {/* CARDS - Full size */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {getdata.map((value, index) => (
+            <div
+              key={value.title}
+              className="transform transition-all duration-500 hover:scale-105"
+              style={{ 
+                animation: `fadeInUp 0.5s ease-out ${index * 0.1}s forwards`,
+                opacity: 0
+              }}
+            >
+              <Cards
+                title={value.title}
+                image={value.image}
+                subtitle={value.subtitle}
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
       <Footer />
 
-      <div className="text-center text-white bg-zinc-950 py-3">
+      <div className="text-center text-white bg-zinc-950 py-4">
         © IITian Bros
       </div>
 
-      <style jsx>{`
-        @keyframes fadeIn {
+      <style>{`
+        @keyframes fadeInUp {
           from {
             opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-        
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(30px);
           }
           to {
             opacity: 1;
             transform: translateY(0);
           }
-        }
-        
-        .animate-fadeIn {
-          animation: fadeIn 0.5s ease-out;
-        }
-        
-        .animate-slideUp {
-          animation: slideUp 0.5s ease-out forwards;
-          opacity: 0;
         }
       `}</style>
     </div>
