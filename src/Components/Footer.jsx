@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom'
 
 const Footer = () => {
   return (
-    <div className="bg-gradient-to-r from-violet-950 via-zinc-950 to-violet-900 text-white px-4 py-8">
+    <div className="bg-gradient-to-r from-violet-800 via-zinc-900 to-indigo-800 text-white px-4 py-8">
 
-      {/* GRID WRAPPER */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      {/* WRAPPER: keeps slight horizontal feel even on mobile */}
+      <div className="flex flex-wrap justify-between gap-6">
 
-        {/* ABOUT SECTION */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-3 font-bold text-sm md:text-base">
+        {/* ABOUT */}
+        <div className="min-w-[140px] flex-1">
+          <div className="flex items-center gap-2 font-bold text-sm md:text-base">
             <div>#LearnBetter</div>
             <img
               src="/logo.png"
@@ -19,35 +19,39 @@ const Footer = () => {
             />
           </div>
 
-          <p className="text-xs md:text-sm text-gray-300">
+          <p className="text-xs md:text-sm mt-2 text-gray-200">
             IITian Bros provides well-structured and easy-to-understand learning resources for competitive exams.
           </p>
 
-          <p className="text-sm">Made with ❤️</p>
+          <p className="mt-2 text-sm">Made with ❤️</p>
         </div>
 
         {/* LINKS */}
-        <div className="space-y-2 text-sm md:text-base">
-          <div className="text-lg font-bold">Links</div>
+        <div className="min-w-[120px] flex-1 text-sm md:text-base">
+          <div className="font-bold mb-2">Links</div>
 
-          <div><Link to="/About">About Us</Link></div>
-          <div><Link to="/Contact">Contact Us</Link></div>
-          <div><Link to="/Feedback">Feedback</Link></div>
+          <div className="space-y-1">
+            <div><Link to="/About">About Us</Link></div>
+            <div><Link to="/Contact">Contact Us</Link></div>
+            <div><Link to="/Feedback">Feedback</Link></div>
+          </div>
         </div>
 
         {/* COURSES */}
-        <div className="space-y-2 text-sm md:text-base">
-          <div className="text-lg font-bold">Courses</div>
+        <div className="min-w-[120px] flex-1 text-sm md:text-base">
+          <div className="font-bold mb-2">Courses</div>
 
-          <div>Physics</div>
-          <div>Chemistry</div>
-          <div>Maths</div>
-          <div>Others</div>
+          <div className="space-y-1">
+            <div>Physics</div>
+            <div>Chemistry</div>
+            <div>Maths</div>
+            <div>Others</div>
+          </div>
         </div>
 
         {/* SOCIAL */}
-        <div className="space-y-2">
-          <div className="text-lg font-bold">Social</div>
+        <div className="min-w-[140px] flex-1">
+          <div className="font-bold mb-2 text-sm md:text-base">Social</div>
 
           <div className="flex flex-wrap gap-3">
 
@@ -85,7 +89,6 @@ const Footer = () => {
         </div>
 
       </div>
-
     </div>
   )
 }
