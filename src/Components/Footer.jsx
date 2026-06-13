@@ -3,9 +3,8 @@ import { Link } from 'react-router-dom'
 
 const Footer = () => {
   return (
-    <div className="bg-gradient-to-r from-violet-800 via-zinc-900 to-indigo-800 text-white px-4 py-8">
+    <div className="bg-gradient-to-r from-indigo-600 via-violet-500 to-purple-600 text-white px-4 py-8">
 
-      {/* WRAPPER: keeps slight horizontal feel even on mobile */}
       <div className="flex flex-wrap justify-between gap-6">
 
         {/* ABOUT */}
@@ -19,7 +18,7 @@ const Footer = () => {
             />
           </div>
 
-          <p className="text-xs md:text-sm mt-2 text-gray-200">
+          <p className="text-xs md:text-sm mt-2 text-white/90">
             IITian Bros provides well-structured and easy-to-understand learning resources for competitive exams.
           </p>
 
