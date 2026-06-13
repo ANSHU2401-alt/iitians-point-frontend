@@ -76,7 +76,7 @@ const Titles = (props) => {
         )}
 
         <div className="text-2xl mb-3 font-bold px-4 py-3 border-b border-zinc-800">
-          📚 {title}
+          Title: {title}
         </div>
 
         <div className="px-3 pb-20">
