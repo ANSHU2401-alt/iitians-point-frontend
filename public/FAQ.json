@@ -1,0 +1,82 @@
+[
+  {
+    "ques": "I am not able to do Maths questions, what should I do?",
+    "ans": "Start with basic questions, revise formulas daily, and practice step-by-step instead of jumping to hard problems."
+  },
+  {
+    "ques": "I forget formulas in the exam, how can I remember them?",
+    "ans": "Make a small formula notebook, revise it every day, and try to understand how formulas are derived."
+  },
+  {
+    "ques": "Physics feels very tough to me, how can I improve?",
+    "ans": "Focus on concepts first, then solve numericals daily and analyze your mistakes."
+  },
+  {
+    "ques": "Chemistry has too much to memorize, what should I do?",
+    "ans": "For Inorganic, revise NCERT repeatedly. For Organic, understand reaction mechanisms. For Physical, practice numericals."
+  },
+  {
+    "ques": "I get very low marks in mock tests, should I stop preparing?",
+    "ans": "No. Mock tests help you find weak areas. Work on your mistakes instead of getting demotivated."
+  },
+  {
+    "ques": "I cannot manage school and JEE preparation together, what can I do?",
+    "ans": "Make a daily timetable and align JEE topics with your school syllabus to save time."
+  },
+  {
+    "ques": "I panic during exams even after studying, what should I do?",
+    "ans": "Practice mock tests in exam-like conditions and use deep breathing to stay calm."
+  },
+  {
+    "ques": "I feel others are better than me, what should I do?",
+    "ans": "Do not compare with others. Compare your present performance with your past performance."
+  },
+  {
+    "ques": "I cannot complete the syllabus on time, what should I do?",
+    "ans": "Focus on high-weightage chapters first and revise them properly instead of rushing through everything."
+  },
+  {
+    "ques": "I make silly mistakes in exams, how can I reduce them?",
+    "ans": "Read the question carefully, avoid rushing, and recheck calculations if time allows."
+  },
+  {
+    "ques": "I understand concepts but cannot solve questions, what should I do?",
+    "ans": "Solve more solved examples and then practice similar problems to convert theory into application."
+  },
+  {
+    "ques": "I forget what I studied after a few days, what is the solution?",
+    "ans": "Revise topics weekly and use short notes to quickly refresh important formulas and concepts."
+  },
+  {
+    "ques": "Maths takes too much time in exam, how can I improve speed?",
+    "ans": "Practice timed questions daily and learn shortcuts and standard results for common question types."
+  },
+  {
+    "ques": "I am weak in coordinate geometry, what should I do?",
+    "ans": "Start from straight lines and circles, practice basic problems, and gradually move to tougher ones."
+  },
+  {
+    "ques": "I make calculation mistakes in Physics and Maths, how can I avoid them?",
+    "ans": "Write steps clearly, avoid mental calculation for long values, and recheck units and signs."
+  },
+  {
+    "ques": "Organic Chemistry reactions confuse me, what should I do?",
+    "ans": "Focus on reaction mechanisms and practice converting one functional group into another."
+  },
+  {
+    "ques": "I feel sleepy while studying, what should I do?",
+    "ans": "Study in short focused sessions, take small breaks, and avoid studying immediately after heavy meals."
+  },
+  {
+    "ques": "I cannot concentrate for long hours, how can I improve focus?",
+    "ans": "Keep your phone away, study with a timer (like 25 minutes), and set small daily targets."
+  },
+  {
+    "ques": "I get demotivated after seeing tough questions, what should I do?",
+    "ans": "Remember that tough questions are for practice, and improvement comes from regular effort."
+  },
+  {
+    "ques": "I do not know which chapters to prioritize for JEE, what should I do?",
+    "ans": "Start with high-weightage and scoring chapters and revise them properly before moving to others."
+  }
+]

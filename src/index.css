@@ -1,0 +1,109 @@
+@import "tailwindcss";
+html,body{
+  height: 100%;
+  width: 100%;
+}
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+::-webkit-scrollbar{
+  width: 0px;
+}
+.maths::-webkit-scrollbar{
+  width: 15px;
+}
+::-webkit-scrollbar-track{
+  background-color: black;
+}
+::-webkit-scrollbar-thumb{
+  background-color: rgb(43, 42, 42);
+}
+::-webkit-scrollbar-thumb:hover{
+  background-color: rgb(65, 63, 63);
+}
+.anim:hover{
+  animation-name: mover;
+  animation-timing-function: linear;
+  animation-delay: 0s;
+  animation-duration: 1.5s;
+}
+@keyframes mover {
+  0%{
+    border-left: 2px solid blue;
+  }
+  25%{
+    border-top: 2px solid blue;
+  }
+  50%{
+    border-right: 2px solid blue;
+  }
+  100%{
+  border-bottom: 2px solid blue;
+  }
+}
+.fort:hover{
+  animation-name: f;
+  animation-timing-function: linear;
+  animation-delay: 0.2s;
+  animation-duration: 0.7s;
+  animation-fill-mode: forwards;
+}
+@keyframes fort {
+  from{
+
+  }
+  to{
+    height: 35px;
+    width: 35px;
+  }
+}
+.bl{
+  background-color: black;
+}
+.bi{
+  /* background-image: url("/background.png"); */
+}
+.deg90{
+  background: linear-gradient(90deg,rgb(0, 0, 0),rgb(56, 57, 58));
+}
+.white{
+  background-color: white;
+  color:white;
+}
+.pink{
+  background: linear-gradient(190deg,rgb(191, 34, 60),blue);
+}
+.always{
+  animation-name: always;
+  animation-duration: 1s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+@keyframes always{
+  from{
+
+  }
+  to{
+    scale: 1.1;
+  }
+}
+.always2:hover{
+  animation-name: always2;
+  animation-duration: 1s;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+@keyframes always2{
+  25%{
+    border-left: 1.5px solid blue;
+  }
+  50%{
+    border-top: 1.5px solid blue;
+  }
+  75%{
+    border-right: 1.5px solid blue;
+  }
+  100%{
+    border-bottom: 1.5px solid blue;
+  }
+}
