@@ -1,61 +1,34 @@
-import React, { useEffect, useRef, useState } from 'react'
-// import Lenis from "lenis";
-import Navbar from './Components/Navbar'
-import Searchbar from './Components/Searchbar';
-import Cards from './Components/Cards';
-import axios from 'axios'
-import Footer from './Components/Footer';
+import React, { useEffect, useRef, useState } from "react";
+import Navbar from "./Components/Navbar";
+import Searchbar from "./Components/Searchbar";
+import Cards from "./Components/Cards";
+import axios from "axios";
+import Footer from "./Components/Footer";
 import { differenceInDays } from "date-fns";
 
 axios.defaults.withCredentials = true;
 
 const App = () => {
-
-  const startDate = new Date(Date.now());
+  const startDate = new Date();
   const endDate = new Date("2027-01-21");
   const days = differenceInDays(endDate, startDate);
 
   const [username, setUsername] = useState("");
+  const [streak, setStreak] = useState(0);
+
   const [showModal, setShowModal] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const [searchref, setsearchref] = useState(null)
-  const wholeRef = useRef(null);
+  const [searchref, setsearchref] = useState(null);
   const [getdata, setgetdata] = useState([]);
 
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [streak, setStreak] = useState(0);
 
-  // =========================
-  // CHANGED: LOADING STATE
-  // =========================
   const [loading, setLoading] = useState(true);
 
-  // =========================
-  // CHANGED: STABLE LENIS
-  // =========================
-  // useEffect(() => {
-  //   const lenis = new Lenis({
-  //     smoothWheel: true,
-  //     lerp: 0.08,
-  //   });
-
-  //   let rafId;
-
-  //   const raf = (time) => {
-  //     lenis.raf(time);
-  //     rafId = requestAnimationFrame(raf);
-  //   };
-
-  //   rafId = requestAnimationFrame(raf);
-
-  //   return () => {
-  //     cancelAnimationFrame(rafId);
-  //     lenis.destroy();
-  //   };
-  // }, []);
+  const wholeRef = useRef(null);
 
   async function getMathsdataandNotes(str) {
     let getIt = await axios(str);
@@ -63,26 +36,28 @@ const App = () => {
   }
 
   useEffect(() => {
-    getMathsdataandNotes('maths.json')
-  }, [])
+    getMathsdataandNotes("maths.json");
+  }, []);
 
   const syncAuth = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/checklogin", {
-        withCredentials: true
-      });
+      const res = await axios.get(
+        "https://backend-api-p3b2.onrender.com/checklogin",
+        { withCredentials: true }
+      );
 
       setAuthChecked(true);
 
-      if (res.data.loggedIn === true) {
+      if (res.data.loggedIn) {
         setIsLoggedIn(true);
         setUsername(res.data.username);
         setStreak(res.data.streak || 0);
       } else {
         setIsLoggedIn(false);
         setUsername("");
+        setStreak(0);
       }
-    } catch (error) {
+    } catch (err) {
       setAuthChecked(true);
       setIsLoggedIn(false);
     }
@@ -92,55 +67,45 @@ const App = () => {
     syncAuth();
   }, []);
 
-  // =========================
-  // CHANGED: GLOBAL LOADING FIX
-  // =========================
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 1200);
+    }, 800);
 
     return () => clearTimeout(timer);
   }, []);
 
-  // =========================
-  // CHANGED: SCROLL LOCK DURING LOADING
-  // =========================
   useEffect(() => {
     document.body.style.overflow = loading ? "hidden" : "auto";
   }, [loading]);
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post("http://localhost:3000/login", {
-        Name: name,
-        Password: password
-      }, {
-        withCredentials: true
-      });
+      const res = await axios.post(
+        "https://backend-api-p3b2.onrender.com/login",
+        {
+          Name: name,
+          Password: password,
+        },
+        { withCredentials: true }
+      );
 
-      if (res.data.success === true) {
-        setUsername(res.data.username);
-        setIsLoggedIn(true);
-        setAuthChecked(true);
+      if (res.data.success) {
         setShowModal(false);
         await syncAuth();
       } else {
-        alert("Invalid username or password");
+        alert("Invalid credentials");
       }
-
     } catch (err) {
+      console.log(err);
       alert("Login failed");
     }
   };
 
-  // =========================
-  // CHANGED: LOADING SCREEN
-  // =========================
   if (loading) {
     return (
-      <div className="w-full h-screen flex flex-col justify-center items-center bg-black text-white">
-        <div className="text-xl animate-pulse">
+      <div className="w-full h-screen flex justify-center items-center bg-black text-white">
+        <div className="animate-pulse text-xl">
           Loading IITians Point...
         </div>
       </div>
@@ -151,84 +116,76 @@ const App = () => {
     <div className="w-full bg-black" ref={wholeRef}>
       <Navbar />
 
-      <div className="text-white w-full relative bg-black">
+      {/* LOGIN MODAL */}
+      {authChecked && showModal && (
+        <div className="fixed inset-0 bg-black flex justify-center items-center z-50">
+          <div className="bg-zinc-900 p-6 rounded-xl w-[90%] md:w-[400px]">
+            <h1 className="text-2xl text-white text-center mb-4">
+              Login
+            </h1>
 
-        {authChecked && showModal && (
-          <div className="fixed top-0 left-0 w-full h-full z-50 flex justify-center items-center bg-black">
-
-            <div className="w-[90%] md:w-[450px] bg-zinc-900 rounded-xl p-6 text-white border border-zinc-700">
-
-              <h1 className="text-3xl font-bold text-center">
-                Welcome to IITian Bros
-              </h1>
-
-              <div className="mt-6 flex flex-col gap-3">
-
-                <input
-                  placeholder="Name"
-                  className="p-2 bg-black border border-zinc-700"
-                  onChange={(e) => setName(e.target.value)}
-                />
-
-                <input
-                  placeholder="Password"
-                  type="password"
-                  className="p-2 bg-black border border-zinc-700"
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-
-                <button
-                  onClick={handleLogin}
-                  className="bg-red-600 py-3 rounded-lg font-semibold"
-                >
-                  Login
-                </button>
-
-              </div>
-
-            </div>
-          </div>
-        )}
-
-        <Searchbar toshow={getdata} search={searchref} setsearch={setsearchref} />
-
-        {authChecked && isLoggedIn && (
-          <div className="text-white font-semibold bg-emerald-800 px-4 py-3 flex justify-between">
-            <div>
-              Welcome, {username} 👋 | 🔥 Streak: {streak}
-            </div>
-            <div>
-              Days left: {days}
-            </div>
-          </div>
-        )}
-
-        <div className="text-center bg-zinc-900 py-3">
-          Today’s struggle is tomorrow’s strength.
-        </div>
-
-        <div className="flex flex-wrap gap-3 justify-center mt-4 px-2">
-
-          {getdata.map(value => (
-            <Cards
-              key={value.title}
-              title={value.title}
-              image={value.image}
-              subtitle={value.subtitle}
+            <input
+              className="w-full p-2 mb-3 bg-black text-white border border-gray-600"
+              placeholder="Name"
+              onChange={(e) => setName(e.target.value)}
             />
-          ))}
 
+            <input
+              className="w-full p-2 mb-3 bg-black text-white border border-gray-600"
+              type="password"
+              placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            <button
+              onClick={handleLogin}
+              className="w-full bg-red-600 py-2 text-white rounded"
+            >
+              Login
+            </button>
+          </div>
         </div>
+      )}
 
-        <Footer />
+      <Searchbar
+        toshow={getdata}
+        search={searchref}
+        setsearch={setsearchref}
+      />
 
-        <div className="text-white px-2 py-3 bg-zinc-950 text-center">
-          &copy; IITian - Bros
+      {/* USER INFO BAR */}
+      {authChecked && isLoggedIn && (
+        <div className="bg-emerald-800 text-white px-4 py-3 flex justify-between">
+          <div>
+            Welcome, {username} 👋 | 🔥 Streak: {streak}
+          </div>
+          <div>Days left: {days}</div>
         </div>
+      )}
 
+      <div className="bg-zinc-900 text-white text-center py-2">
+        Today’s struggle is tomorrow’s strength.
+      </div>
+
+      {/* CARDS */}
+      <div className="flex flex-wrap justify-center gap-4 mt-4">
+        {getdata.map((value) => (
+          <Cards
+            key={value.title}
+            title={value.title}
+            image={value.image}
+            subtitle={value.subtitle}
+          />
+        ))}
+      </div>
+
+      <Footer />
+
+      <div className="text-center text-white bg-zinc-950 py-3">
+        © IITian Bros
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
