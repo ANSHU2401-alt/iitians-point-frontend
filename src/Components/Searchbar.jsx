@@ -79,11 +79,19 @@ const Searchbar = (props) => {
     }
   };
   
+  useEffect(() => {
+    if (transcript) {
+      props.setsearch(transcript);
+      if (searchinput.current) {
+        searchinput.current.value = transcript;
+      }
+    }
+  }, [transcript]);
+  
   return (
     <>
       <div className={`${props.className} relative search flex justify-between p-1.5 items-center w-full opacity-60 z-10 opacity-100`}>
-        <div className="bg-zinc-950 div w-[50%] md:w-[19%] rounded-md  absolute top-0 md:left-[-19%] left-[-50%] text-black flex flex-col gap-3 cc p-2 min-h-1 justify-center" ref={toright}>
-          {/* FIX 1: Changed 'invert' to 'text-white' */}
+        <div className="bg-zinc-950 div w-[50%] md:w-[19%] rounded-md absolute top-0 md:left-[-19%] left-[-50%] text-black flex flex-col gap-3 cc p-2 min-h-1 justify-center" ref={toright}>
           <div className="p-2 div cursor-pointer" onClick={leftfn}>
             <RxHamburgerMenu className='text-white' />
           </div>
@@ -112,28 +120,37 @@ const Searchbar = (props) => {
           </div>
         </div>
         
-        {/* FIX 2: Added text-white to main hamburger icon */}
         <div className={"hamburger cursor-pointer"} onClick={rightfn}>
           <RxHamburgerMenu className='text-white' />
         </div>
-        
-        <div className="div rounded-2xl flex justify-start items-center w-[25%] pl-2 bg-slate-600">
-          <CiSearch className="transition-all duration-200 hover:scale-125 cursor-pointer" onClick={() => {
+        <div className="div rounded-2xl flex justify-start items-center w-[25%] pl-2 bg-white">
+          <CiSearch className="transition-all duration-200 hover:scale-125 cursor-pointer text-gray-600" onClick={() => {
             searchinput.current.focus();
           }} />
-          <input type="text" ref={searchinput} placeholder="Search" className='w-[95%] md:w-[90%] focus:outline-0 p-1' onChange={(e) => {
-            props.setsearch(e.target.value);
-            console.log(props.search);
-            if (props.search == "") {
-              props.setsearch(null);
-            }
-          }}></input>
+          <input 
+            type="text" 
+            ref={searchinput} 
+            placeholder="Search" 
+            className='w-[95%] md:w-[90%] focus:outline-0 p-1 bg-white text-black placeholder-gray-500' 
+            onChange={(e) => {
+              props.setsearch(e.target.value);
+              console.log(props.search);
+              if (e.target.value === "") {
+                props.setsearch(null);
+              }
+            }}
+          />
           <div className="div pr-2 scale-85 md:scale-120 hover:scale-140 cursor-pointer transition-all relative" onClick={() => {
-            handleMicClick();
-            props.setsearch(transcript);
-            searchinput.current.value = transcript;
+            if (listening) {
+              SpeechRecognition.stopListening();
+            } else {
+              SpeechRecognition.startListening({
+                continuous: true,
+                language: "en-IN",
+              });
+            }
           }}>
-            <AiOutlineAudio color="#d1d5db" />
+            <AiOutlineAudio className={`text-${listening ? 'red-500' : 'gray-600'} text-xl`} />
           </div>
         </div>
       </div>
