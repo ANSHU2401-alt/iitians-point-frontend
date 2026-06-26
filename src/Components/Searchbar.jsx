@@ -124,14 +124,11 @@ const Searchbar = (props) => {
   }, [transcript]);
   
   const handleSearch = (e) => {
-    const value = e.target.value.toLowerCase(); 
+    const value = e.target.value.toLowerCase();
     setLocalSearch(value);
     props.setsearch(value);
     console.log("Searching for:", value);
-    if (value === "") {
-      props.setsearch(null);
-    }
-  };
+};
   
   return (
     <>
