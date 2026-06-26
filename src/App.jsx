@@ -140,7 +140,7 @@ const App = () => {
     }
   };
   const filteredData = getdata.filter((value) => {
-  const q = searchref.trim().toLowerCase();
+  const q = (searchref ?? "").trim().toLowerCase();
 
   if (!q) return true;
 
