@@ -15,17 +15,23 @@ const Searchbar = (props) => {
   const toright = useRef(null)
   const ll = useRef(null)
   
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  
   const rightfn = () => {
-    gsap.to(toright.current, {
-      left: 0,
-      opacity: 1,
-      duration: 0.8,
-      delay: 0.4,
-      ease: "power2.out"
-    });
+    if (!isMenuOpen) {
+      setIsMenuOpen(true)
+      gsap.to(toright.current, {
+        left: 0,
+        opacity: 1,
+        duration: 0.8,
+        delay: 0.4,
+        ease: "power2.out"
+      });
+    }
   }
   
   const leftfn = () => {
+    setIsMenuOpen(false)
     const mm = gsap.matchMedia();
     mm.add("(max-width: 767px)", () => {
       gsap.to(toright.current, {
@@ -49,29 +55,50 @@ const Searchbar = (props) => {
   const [getnotes, setgetnotes] = useState([])
   
   async function getnotesfn(str) {
-    let getIt = await axios(str);
-    setgetnotes(getIt.data);
-    console.log(getIt.data)
+    try {
+      let getIt = await axios.get(str);
+      setgetnotes(getIt.data);
+      console.log(getIt.data)
+    } catch (error) {
+      console.error("Error fetching notes:", error);
+    }
   }
   
-  useEffect(
-    () => {
-      getnotesfn('notes.json')
-    },
-    [],
-  )
+  useEffect(() => {
+    getnotesfn('/notes.json') 
+  }, [])
   
-  const { transcript, listening, browserSupportsSpeechRecognition } =
+  const { transcript, listening, browserSupportsSpeechRecognition, resetTranscript } =
     useSpeechRecognition();
 
   if (!browserSupportsSpeechRecognition) {
-    return <p>Browser does not support speech recognition</p>;
+    return (
+      <div className="relative search flex justify-between p-1.5 items-center w-full opacity-60 z-10 opacity-100">
+        <div className="div rounded-2xl flex justify-start items-center w-[25%] pl-2 bg-white">
+          <CiSearch className="transition-all duration-200 hover:scale-125 cursor-pointer text-gray-600" />
+          <input 
+            type="text" 
+            ref={searchinput} 
+            placeholder="Search" 
+            className='w-[95%] md:w-[90%] focus:outline-0 p-1 bg-white text-black placeholder-gray-500' 
+            onChange={(e) => {
+              props.setsearch(e.target.value);
+              if (e.target.value === "") {
+                props.setsearch(null);
+              }
+            }}
+          />
+        </div>
+      </div>
+    );
   }
   
   const handleMicClick = () => {
     if (listening) {
       SpeechRecognition.stopListening();
+      resetTranscript();
     } else {
+      resetTranscript();
       SpeechRecognition.startListening({
         continuous: true,
         language: "en-IN",
@@ -80,13 +107,15 @@ const Searchbar = (props) => {
   };
   
   useEffect(() => {
-    if (transcript) {
+    if (transcript && transcript.trim() !== "") {
       props.setsearch(transcript);
       if (searchinput.current) {
         searchinput.current.value = transcript;
+        const event = new Event('input', { bubbles: true });
+        searchinput.current.dispatchEvent(event);
       }
     }
-  }, [transcript]);
+  }, [transcript, props.setsearch]);
   
   return (
     <>
@@ -123,9 +152,9 @@ const Searchbar = (props) => {
         <div className={"hamburger cursor-pointer"} onClick={rightfn}>
           <RxHamburgerMenu className='text-white' />
         </div>
-        <div className="div rounded-2xl flex justify-start items-center w-[25%] pl-2 bg-white">
+        <div className="div rounded-2xl flex justify-start items-center w-[75%] md:w-[50%] lg:w-[25%] pl-2 bg-white">
           <CiSearch className="transition-all duration-200 hover:scale-125 cursor-pointer text-gray-600" onClick={() => {
-            searchinput.current.focus();
+            searchinput.current?.focus();
           }} />
           <input 
             type="text" 
@@ -140,16 +169,7 @@ const Searchbar = (props) => {
               }
             }}
           />
-          <div className="div pr-2 scale-85 md:scale-120 hover:scale-140 cursor-pointer transition-all relative" onClick={() => {
-            if (listening) {
-              SpeechRecognition.stopListening();
-            } else {
-              SpeechRecognition.startListening({
-                continuous: true,
-                language: "en-IN",
-              });
-            }
-          }}>
+          <div className="div pr-2 scale-85 md:scale-120 hover:scale-140 cursor-pointer transition-all relative" onClick={handleMicClick}>
             <AiOutlineAudio className={`text-${listening ? 'red-500' : 'gray-600'} text-xl`} />
           </div>
         </div>
