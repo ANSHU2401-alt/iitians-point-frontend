@@ -90,9 +90,6 @@ const Searchbar = (props) => {
               const value = e.target.value.toLowerCase(); 
               setLocalSearch(value);
               props.setsearch(value); 
-              if (value === "") {
-                props.setsearch(null);
-              }
             }}
           />
         </div>
