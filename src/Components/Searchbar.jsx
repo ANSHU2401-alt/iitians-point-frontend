@@ -97,18 +97,19 @@ const Searchbar = (props) => {
     );
   }
   
-  const handleMicClick = () => {
-    if (listening) {
-      SpeechRecognition.stopListening();
-      resetTranscript();
-    } else {
-      resetTranscript();
-      SpeechRecognition.startListening({
-        continuous: true,
-        language: "en-IN",
-      });
-    }
-  };
+const handleMicClick = () => {
+  console.log("Clicked");
+  console.log("Supported:", browserSupportsSpeechRecognition);
+
+  if (listening) {
+    SpeechRecognition.stopListening();
+  } else {
+    SpeechRecognition.startListening({
+      continuous: true,
+      language: "en-IN",
+    });
+  }
+};
   
   useEffect(() => {
     if (transcript && transcript.trim() !== "") {
