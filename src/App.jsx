@@ -20,7 +20,7 @@ const App = () => {
   const [authChecked, setAuthChecked] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const [searchref, setsearchref] = useState(null);
+  const [searchref, setsearchref] = useState("");
   const [getdata, setgetdata] = useState([]);
 
   const [name, setName] = useState("");
@@ -139,7 +139,13 @@ const App = () => {
       alert("Login failed");
     }
   };
+  const filteredData = getdata.filter((value) => {
+  const q = searchref.trim().toLowerCase();
 
+  if (!q) return true;
+
+  return JSON.stringify(value).toLowerCase().includes(q);
+});
   if (loading) {
     return (
       <div className="w-full h-screen flex justify-center items-center bg-black text-white">
@@ -206,16 +212,16 @@ const App = () => {
       </div>
 
       {/* CARDS */}
-      <div className="flex flex-wrap justify-center gap-4 mt-4">
-        {getdata.map((value) => (
-          <Cards
-            key={value.title}
-            title={value.title}
-            image={value.image}
-            subtitle={value.subtitle}
-          />
-        ))}
-      </div>
+<div className="flex flex-wrap justify-center gap-4 mt-4">
+  {filteredData.map((value) => (
+    <Cards
+      key={value.title}
+      title={value.title}
+      image={value.image}
+      subtitle={value.subtitle}
+    />
+  ))}
+</div>
 
       <Footer />
 
