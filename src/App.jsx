@@ -158,7 +158,7 @@ const App = () => {
 
   return (
     <div className="w-full bg-black" ref={wholeRef}>
-      <Navbar />
+      <Navbar streak={streak} />
 
       {/* LOGIN MODAL */}
       {authChecked && showModal && (
