@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Link } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = ({streak}) => {
   const searchinput = useRef(null);
   const [dark, setDark] = useState(false);
 
@@ -40,9 +40,11 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center space-x-2.5">
-          <button className="px-2 py-1 text-white border border-white rounded-2xl cursor-pointer hover:font-semibold w-[60px]">
-            <Link to="/login">Login</Link>
-          </button>
+              {streak <= 0 && (
+      <button className="px-2 py-1 text-white border border-white rounded-2xl cursor-pointer hover:font-semibold w-[60px]">
+        <Link to="/login">Login</Link>
+      </button>
+    )}
 
           <button className="px-2 py-1 bg-white text-black rounded-2xl cursor-pointer hover:font-semibold w-[80px]">
             <Link to="/SignUp">Sign Up</Link>
