@@ -9,20 +9,20 @@ const Navbar = ({streak}) => {
     setDark(prev => !prev);
     document.documentElement.classList.toggle("dark");
   };
-const navigate = useNavigate();
-  const handleLogout = async () => {
-  try {
-    await axios.post(
-      "https://iitiansbro-seven.vercel.app/logout",
-      {},
-      { withCredentials: true }
-    );
+// const navigate = useNavigate();
+//   const handleLogout = async () => {
+//   try {
+//     await axios.post(
+//       "https://iitiansbro-seven.vercel.app/logout",
+//       {},
+//       { withCredentials: true }
+//     );
 
-    navigate("/login");
-  } catch (error) {
-    console.log("Logout failed:", error);
-  }
-};
+//     navigate("/login");
+//   } catch (error) {
+//     console.log("Logout failed:", error);
+//   }
+// };
   return (
     <nav className="w-full bg-slate-700 dark:bg-slate-800 text-white p-2.5 md:px-2 md:py-3 justify-between md:justify-around md:flex items-center sticky top-0 z-50 transition-colors duration-300">
       
@@ -93,12 +93,24 @@ const navigate = useNavigate();
       <Link to="/login">Login</Link>
     </button>
   ) : (
-    <button
-      onClick={handleLogout}
-      className="px-2 py-1 text-white border border-white rounded-2xl cursor-pointer hover:font-semibold w-[75px]"
-    >
-      Logout
-    </button>
+   <button
+  onClick={async () => {
+    try {
+      await axios.post(
+        "https://backend-api-p3b2.onrender.com/logout",
+        {},
+        { withCredentials: true }
+      );
+
+      navigate("/login");
+    } catch (error) {
+      console.log("Logout failed:", error);
+    }
+  }}
+  className="px-2 py-1 text-white border border-white rounded-2xl cursor-pointer hover:font-semibold w-[75px]"
+>
+  Logout
+</button>
   )}
 
   <button className="px-2 py-1 bg-white text-black rounded-2xl cursor-pointer hover:font-semibold w-[80px]">
