@@ -38,7 +38,7 @@ const Navbar = ({streak}) => {
         <div className="cursor-pointer hover:font-semibold w-[75px] hidden md:flex">
           <Link to="/contact">Contact</Link>
         </div>
-
+{/* 
         <div className="flex items-center space-x-2.5">
               {streak <= 0 && (
       <button className="px-2 py-1 text-white border border-white rounded-2xl cursor-pointer hover:font-semibold w-[60px]">
@@ -50,7 +50,29 @@ const Navbar = ({streak}) => {
             <Link to="/SignUp">Sign Up</Link>
           </button>
 
-        </div>
+        </div> */}
+        <div className="flex items-center space-x-2.5">
+
+  {streak <= 0 ? (
+    <button className="px-2 py-1 text-white border border-white rounded-2xl cursor-pointer hover:font-semibold w-[60px]">
+      <Link to="/login">Login</Link>
+    </button>
+  ) : (
+    <button
+      onClick={() => {
+        // logout logic yahan
+      }}
+      className="px-2 py-1 text-white border border-white rounded-2xl cursor-pointer hover:font-semibold w-[75px]"
+    >
+      Logout
+    </button>
+  )}
+
+  <button className="px-2 py-1 bg-white text-black rounded-2xl cursor-pointer hover:font-semibold w-[80px]">
+    <Link to="/SignUp">Sign Up</Link>
+  </button>
+
+</div>
       </div>
     </nav>
   );
