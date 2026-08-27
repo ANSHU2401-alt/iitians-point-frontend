@@ -144,6 +144,9 @@ const navigate = useNavigate();
     Logout
   </button>
 )}
+    <button className="px-2 py-1 bg-white text-black rounded-2xl cursor-pointer hover:font-semibold w-[80px]">
+    <Link to="/SignUp">Sign Up</Link>
+  </button>
       </div>
     </nav>
   );
