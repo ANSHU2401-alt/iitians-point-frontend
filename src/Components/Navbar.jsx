@@ -9,7 +9,7 @@ const Navbar = ({streak}) => {
     setDark(prev => !prev);
     document.documentElement.classList.toggle("dark");
   };
-// const navigate = useNavigate();
+const navigate = useNavigate();
 //   const handleLogout = async () => {
 //   try {
 //     await axios.post(
